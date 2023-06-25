@@ -1,5 +1,6 @@
 package io.agora.agora_rtc_ng;
 
+import android.graphics.SurfaceTexture;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Surface;
@@ -17,6 +18,8 @@ public class TextureRenderer {
     private final IrisRenderer irisRenderer;
     private final MethodChannel methodChannel;
     private final Handler handler;
+    private SurfaceTexture flutterSurfaceTexture;
+    private Surface renderSurface;
 
     public TextureRenderer(
             TextureRegistry textureRegistry,
@@ -29,7 +32,10 @@ public class TextureRenderer {
         this.handler = new Handler(Looper.getMainLooper());
 
         this.flutterTexture = textureRegistry.createSurfaceTexture();
-        Surface surface = new Surface(this.flutterTexture.surfaceTexture());
+//        this.flutterTexture.surfaceTexture().setDefaultBufferSize(300, 300);
+        this.flutterSurfaceTexture = this.flutterTexture.surfaceTexture();
+        this.renderSurface = new Surface(this.flutterSurfaceTexture);
+
 
         this.methodChannel = new MethodChannel(binaryMessenger, "agora_rtc_engine/texture_render_" + flutterTexture.id());
 
@@ -51,7 +57,7 @@ public class TextureRenderer {
 
             }
         });
-        this.irisRenderer.startRenderingToSurface(surface);
+        this.irisRenderer.startRenderingToSurface(renderSurface);
     }
 
     public long getTextureId() {
@@ -60,6 +66,10 @@ public class TextureRenderer {
 
     public void dispose() {
         irisRenderer.stopRenderingToSurface();
-        flutterTexture.release();
+        flutterSurfaceTexture = null;
+        if (renderSurface != null) {
+            renderSurface.release();
+            renderSurface = null;
+        }
     }
 }
