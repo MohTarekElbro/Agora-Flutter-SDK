@@ -34,6 +34,7 @@ public class TextureRenderer {
         this.flutterTexture = textureRegistry.createSurfaceTexture();
 //        this.flutterTexture.surfaceTexture().setDefaultBufferSize(300, 300);
         this.flutterSurfaceTexture = this.flutterTexture.surfaceTexture();
+
         this.renderSurface = new Surface(this.flutterSurfaceTexture);
 
 
@@ -48,6 +49,8 @@ public class TextureRenderer {
         this.irisRenderer.setCallback(new IrisRenderer.Callback() {
             @Override
             public void onSizeChanged(int width, int height) {
+                TextureRenderer.this.flutterSurfaceTexture.setDefaultBufferSize(width, height);
+
                 handler.post(() -> methodChannel.invokeMethod(
                         "onSizeChanged",
                         new HashMap<String, Integer>() {{
@@ -66,6 +69,7 @@ public class TextureRenderer {
 
     public void dispose() {
         irisRenderer.stopRenderingToSurface();
+        this.irisRenderer.setCallback(null);
         flutterSurfaceTexture = null;
         if (renderSurface != null) {
             renderSurface.release();
