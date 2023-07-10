@@ -346,32 +346,31 @@ class _AgoraRtcRenderTextureState extends State<AgoraRtcRenderTexture>
   @override
   Widget build(BuildContext context) {
     if (widget.controller.getTextureId() != kTextureNotInit) {
-      print('height: $_height, width: $_width');
       // Only handle render mode on macos at this time
       if (_height != 0 && _width != 0) {
         Widget result = buildTexure(widget.controller.getTextureId());
         final renderMode = widget.controller.canvas.renderMode ??
             RenderModeType.renderModeHidden;
 
-        // if (widget.controller.shouldHandlerRenderMode) {
-        //   result = _applyRenderMode(renderMode, result);
-        //   VideoMirrorModeType mirrorMode;
-        //   if (widget.controller.isLocalUid) {
-        //     mirrorMode = widget.controller.canvas.mirrorMode ??
-        //         VideoMirrorModeType.videoMirrorModeEnabled;
-        //   } else {
-        //     mirrorMode = widget.controller.canvas.mirrorMode ??
-        //         VideoMirrorModeType.videoMirrorModeDisabled;
-        //   }
+        if (widget.controller.shouldHandlerRenderMode) {
+          result = _applyRenderMode(renderMode, result);
+          VideoMirrorModeType mirrorMode;
+          if (widget.controller.isLocalUid) {
+            mirrorMode = widget.controller.canvas.mirrorMode ??
+                VideoMirrorModeType.videoMirrorModeEnabled;
+          } else {
+            mirrorMode = widget.controller.canvas.mirrorMode ??
+                VideoMirrorModeType.videoMirrorModeDisabled;
+          }
 
-        //   final sourceType = widget.controller.canvas.sourceType ??
-        //       VideoSourceType.videoSourceCameraPrimary;
+          final sourceType = widget.controller.canvas.sourceType ??
+              VideoSourceType.videoSourceCameraPrimary;
 
-        //   result = _applyMirrorMode(mirrorMode, result, sourceType);
-        // } else {
-        //   // Fit mode by default if does not need to handle render mode
-        //   result = _applyRenderMode(RenderModeType.renderModeFit, result);
-        // }
+          result = _applyMirrorMode(mirrorMode, result, sourceType);
+        } else {
+          // Fit mode by default if does not need to handle render mode
+          result = _applyRenderMode(RenderModeType.renderModeFit, result);
+        }
 
         return result;
       }

@@ -7,7 +7,6 @@ import android.view.Surface;
 
 import java.util.HashMap;
 
-import io.agora.iris.IrisRenderer;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.view.TextureRegistry;
@@ -32,7 +31,6 @@ public class TextureRenderer {
         this.handler = new Handler(Looper.getMainLooper());
 
         this.flutterTexture = textureRegistry.createSurfaceTexture();
-//        this.flutterTexture.surfaceTexture().setDefaultBufferSize(300, 300);
         this.flutterSurfaceTexture = this.flutterTexture.surfaceTexture();
 
         this.renderSurface = new Surface(this.flutterSurfaceTexture);
@@ -49,15 +47,21 @@ public class TextureRenderer {
         this.irisRenderer.setCallback(new IrisRenderer.Callback() {
             @Override
             public void onSizeChanged(int width, int height) {
-                TextureRenderer.this.flutterSurfaceTexture.setDefaultBufferSize(width, height);
+                final SurfaceTexture st = TextureRenderer.this.flutterSurfaceTexture;
+                if (null == st) {
+                    return;
+                }
 
-                handler.post(() -> methodChannel.invokeMethod(
-                        "onSizeChanged",
-                        new HashMap<String, Integer>() {{
-                            put("width", width);
-                            put("height", height);
-                        }}));
+                st.setDefaultBufferSize(width, height);
 
+                handler.post(() -> {
+                    methodChannel.invokeMethod(
+                            "onSizeChanged",
+                            new HashMap<String, Integer>() {{
+                                put("width", width);
+                                put("height", height);
+                            }});
+                });
             }
         });
         this.irisRenderer.startRenderingToSurface(renderSurface);
@@ -70,10 +74,10 @@ public class TextureRenderer {
     public void dispose() {
         irisRenderer.stopRenderingToSurface();
         this.irisRenderer.setCallback(null);
-        flutterSurfaceTexture = null;
         if (renderSurface != null) {
             renderSurface.release();
             renderSurface = null;
+            flutterSurfaceTexture = null;
         }
     }
 }

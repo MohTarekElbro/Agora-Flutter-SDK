@@ -68,25 +68,6 @@ public class VideoViewController implements MethodChannel.MethodCallHandler {
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
-//            case "attachVideoFrameBufferManager": {
-//                if (irisVideoFrameBufferManager == null) {
-//                    final long engineIntPtr = (long) call.arguments;
-//                    irisVideoFrameBufferManager = IrisVideoFrameBufferManager.create();
-//                    irisVideoFrameBufferManager.attachToApiEngine(engineIntPtr);
-//                    result.success(irisVideoFrameBufferManager.getNativeHandle());
-//                } else {
-//                    result.success(0L);
-//                }
-//
-//                break;
-//            }
-//            case "detachVideoFrameBufferManager": {
-//                final long engineIntPtr = (long) call.arguments;
-//                detachVideoFrameBufferManager(engineIntPtr);
-//
-//                result.success(true);
-//                break;
-//            }
             case "createTextureRender": {
                 final Map<?, ?> args = (Map<?, ?>) call.arguments;
 
@@ -126,19 +107,6 @@ public class VideoViewController implements MethodChannel.MethodCallHandler {
     private long getLong(Object value) {
         return Long.parseLong(value.toString());
     }
-
-//    private void detachVideoFrameBufferManager(long engineIntPtr) {
-//        if (irisVideoFrameBufferManager != null) {
-//            irisVideoFrameBufferManager.detachFromApiEngine(engineIntPtr);
-//
-//            for (Map.Entry<Long, TextureRenderer> pair : textureRendererMap.entrySet()) {
-//                pair.getValue().dispose();
-//            }
-//            textureRendererMap.clear();
-//            irisVideoFrameBufferManager.destroy();
-//            irisVideoFrameBufferManager = null;
-//        }
-//    }
 
     public void dispose() {
         methodChannel.setMethodCallHandler(null);

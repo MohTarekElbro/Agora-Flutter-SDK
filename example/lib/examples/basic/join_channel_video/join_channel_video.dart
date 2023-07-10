@@ -91,7 +91,7 @@ class _State extends State<JoinChannelVideo> {
 
     await _engine.setVideoEncoderConfiguration(
       const VideoEncoderConfiguration(
-        dimensions: VideoDimensions(width: 640, height: 360),
+        dimensions: VideoDimensions(width: 100, height: 100),
         frameRate: 15,
         bitrate: 0,
       ),
