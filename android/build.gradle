@@ -26,7 +26,7 @@ android {
     compileSdkVersion safeExtGet('compileSdkVersion', 31)
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 18)
+        minSdkVersion safeExtGet('minSdkVersion', 16)
 
         consumerProguardFiles 'consumer-rules.pro'
     }
@@ -52,7 +52,7 @@ android {
 dependencies {
   if (isDev(project)) {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-      implementation project(':iris_android')
+    //   implementation project(':iris_android')
   } else {
    api 'io.agora.rtc:iris-rtc:4.2.0-build.3'
    api 'io.agora.rtc:full-sdk:4.2.0'

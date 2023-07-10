@@ -26,6 +26,7 @@ class FakeCamera {
     await mediaPlayerController.initialize();
     observer = MediaPlayerVideoFrameObserver(
       onFrame: (VideoFrame frame) async {
+        print('MediaPlayerVideoFrameObserver frame ${frame.type}');
         if (frame.width == 0 || frame.height == 0) {
           return;
         }
@@ -62,11 +63,18 @@ class FakeCamera {
     mediaPlayerSourceObserver = MediaPlayerSourceObserver(
       onPlayerSourceStateChanged:
           (MediaPlayerState state, MediaPlayerError ec) async {
+            print('onPlayerSourceStateChanged state: $state, ec: $ec');
         if (state == MediaPlayerState.playerStateOpenCompleted) {
           await mediaPlayerController.play();
           await mediaPlayerController.setLoopCount(99999);
           mediaPlayerControllerPlayed.complete();
         }
+      },
+      onPositionChanged: (positionMs) {
+        print('onPositionChanged positionMs: $positionMs');
+      },
+      onCompleted:() {
+        print('onCompleted');
       },
     );
     mediaPlayerController
@@ -85,6 +93,8 @@ class FakeCamera {
         clientRoleType: ClientRoleType.clientRoleBroadcaster,
       ),
     );
+
+    print('joinChannel end');
   }
 
   Future<void> _notifyOnFirstFrame() async {
