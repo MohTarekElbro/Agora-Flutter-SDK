@@ -36,3 +36,5 @@ third_party/
 **/generated_plugins.cmake
 **/GeneratedPluginRegistrant.swift
 **/.plugin_dev
+
+.ccls-cache/
